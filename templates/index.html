@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>마이 페이보릿 무비스타</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"/>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <style>
+        .container {
+            text-align: center;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .star-list {
+            width: 500px;
+            margin: 20px auto 0 auto;
+        }
+
+        a{
+            text-decoration: none;
+        }
+
+    </style>
+    <script>
+        $(function () {
+            showStar();
+        })
+
+        //GET
+        function showStar() {
+            $('.star-list').empty();
+            $.ajax({
+                type: 'GET',
+                url: '/api/list',
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let stars = response['star_list'];
+
+                        for (let i = 0; i < stars.length; i++) {
+                            let name = stars[i]['name'];
+                            let img = stars[i]['img_url'];
+                            let last = stars[i]['last'];
+                            let like = stars[i]['like'];
+                            let url = stars[i]['url'];
+
+                            makeCard(name, img, last, like, url);
+                        }
+                    }
+                }
+            })
+        }
+
+        //POST
+        function likeStar(star) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/like',
+                data: {name_give:star},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('like 완료!');
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+        //POST
+        function deleteStar(star) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/delete',
+                data: {name_give:star},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('delete 완료! 안녕!');
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+
+        function makeCard(name, img, last, like, url){
+            let temp_html =
+                                `<div class="card">
+                                    <div class="card-content">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <figure class="image is-48x48">
+                                                    <img src="${img}" alt="Placeholder image">
+                                                </figure>
+                                            </div>
+                                            <div class="media-content">
+                                                <a href="${url}" target="blank"><p class="title is-4">${name} (좋아요: ${like})</p></a>
+                                                <p class="subtitle is-6">${last}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <footer class="card-footer">
+                                    <a href="#" class="card-footer-item has-text-info" onclick="likeStar('${name}')">위로!<span class="icon"><i class="fas fa-thumbs-up"></i></span></a>
+                                    <a href="#" class="card-footer-item has-text-danger" onclick="deleteStar('${name}')">삭제!<span class="icon"><i class="fas fa-ban"></i></span></a>
+                                  </footer>
+                                </div>`;
+                            $('.star-list').append(temp_html);
+        }
+    </script>
+</head>
+<body>
+<section class="hero is-warning">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                마이 페이보릿 무비스타😆
+            </h1>
+            <h2 class="subtitle">
+                순위를 매겨봅시다
+            </h2>
+        </div>
+    </div>
+</section>
+
+<div class="star-list">
+    <div class="card">
+        <div class="card-content">
+            <div class="media">
+                <div class="media-left">
+                    <figure class="image is-48x48">
+                        <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                    </figure>
+                </div>
+                <div class="media-content">
+                    <p class="title is-4">이름 좋아요</p>
+                    <p class="subtitle is-6">최근작</p>
+                </div>
+            </div>
+        </div>
+        <footer class="card-footer">
+            <a href="#" class="card-footer-item has-text-info" onclick="likeStar()">위로!<span class="icon"><i
+                    class="fas fa-thumbs-up"></i></span></a>
+            <a href="#" class="card-footer-item has-text-danger" onclick="deleteStar()">삭제!<span class="icon"><i
+                    class="fas fa-ban"></i></span></a>
+        </footer>
+    </div>
+</div>
+</body>
+</html>
