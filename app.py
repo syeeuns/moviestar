@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb://yeny:yeny@3.35.22.81', 27017)
+client = MongoClient('localhost', 27017)
 db = client.dbjungle
 
 @app.route('/')
