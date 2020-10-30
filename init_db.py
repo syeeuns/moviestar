@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 from pymongo import MongoClient
 
-client = MongoClient('mongodb://yeny:yeny@3.35.22.81', 27017)
+client = MongoClient('localhost', 27017)
 db = client.dbjungle
 
 def get_urls():
